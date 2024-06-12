@@ -8,9 +8,9 @@ namespace ChessLib.Model.Pieces
 {
     public class Queen : Piece
     {
-        public Queen(bool white, Square square) : base(white, square) { }
+        public Queen(int set, Square square) : base(set, square) { }
 
-        public override List<Square> GetLegalSquares()
+        public override List<Square> GetLegalSquares(Board board)
         {
             throw new NotImplementedException();
         }

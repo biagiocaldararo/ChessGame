@@ -1,5 +1,6 @@
 using ChessGame.Controls;
 using ChessLib.Model;
+using ChessLib.Model.Pieces;
 
 namespace ChessGame
 {
@@ -60,7 +61,15 @@ namespace ChessGame
                 PressedButton = currentButton;
                 PressedButton.BackColor = Color.LightBlue;
 
-                UpdateButtons(true);
+#warning Provvisorio finchè non vengono implementate le regole di tutti i pezzi
+                if (PressedButton.Square.Piece.GetType().Equals(typeof(Pawn)))
+                {
+                    UpdateSquareButtons();
+                }
+                else
+                {
+                    UpdateButtons(true);
+                }
             }
             else
             {
@@ -82,7 +91,7 @@ namespace ChessGame
 
         private void btn_Concede_Click(object sender, EventArgs e)
         {
-            string player = Game.CurrentPlayer.White ? "Player2" : "Player1";
+            string player = Game.CurrentPlayer.Set == Board.WHITE ? "Player2" : "Player1";
             MessageBox.Show(player + " wins!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             Close();
@@ -117,9 +126,9 @@ namespace ChessGame
                 Location = new Point(x, y),
                 Size = new Size(SquareSize, SquareSize),
                 BackColor = (square.Row + square.Column) % 2 == 0 ? Color.DarkGray : Color.White,
-                BackgroundImage = square.Piece != null ? GetImage(square.Piece.GetType().Name, square.Piece.White) : null,
+                BackgroundImage = square.Piece != null ? GetImage(square.Piece.GetType().Name, square.Piece.Set) : null,
                 BackgroundImageLayout = ImageLayout.Stretch,
-                Enabled = square.Piece != null && square.Piece.White == Game.CurrentPlayer.White,
+                Enabled = square.Piece != null && square.Piece.Set == Game.CurrentPlayer.Set,
             };
 
             newButton.Click += Btn_ClickButton;
@@ -127,34 +136,34 @@ namespace ChessGame
             return newButton;
         }
 
-        private static Image GetImage(string type, bool white)
+        private static Image GetImage(string type, int set)
         {
             Image image = null;
 
             switch (type)
             {
                 case Constants.PIECES_PAWN:
-                    image = white ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_PAWN)
+                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_PAWN)
                         : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_PAWN_D);
                     break;
                 case Constants.PIECES_ROOK:
-                    image = white ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_ROOK)
+                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_ROOK)
                       : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_ROOK_D);
                     break;
                 case Constants.PIECES_KNIGHT:
-                    image = white ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_KNIGHT)
+                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_KNIGHT)
                         : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_KNIGHT_D);
                     break;
                 case Constants.PIECES_BISHOP:
-                    image = white ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_BISHOP)
+                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_BISHOP)
                         : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_BISHOP_D);
                     break;
                 case Constants.PIECES_QUEEN:
-                    image = white ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_QUEEN)
+                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_QUEEN)
                         : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_QUEEN_D);
                     break;
                 case Constants.PIECES_KING:
-                    image = white ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_KING)
+                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_KING)
                         : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_KING_D);
                     break;
             }
@@ -166,7 +175,7 @@ namespace ChessGame
         {
             //squareButton.BackgroundImage = PressedButton.BackgroundImage;
             squareButton.BackgroundImage = squareButton.Square.Piece != null ?
-                GetImage(squareButton.Square.Piece.GetType().Name, squareButton.Square.Piece.White) : null;
+                GetImage(squareButton.Square.Piece.GetType().Name, squareButton.Square.Piece.Set) : null;
 
             PressedButton.BackgroundImage = null;
             PressedButton.BackColor = (PressedButton.Square.Row + PressedButton.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
@@ -178,8 +187,29 @@ namespace ChessGame
         {
             foreach (var btn in Buttons)
             {
-                btn.Enabled = firstClick ? (PressedButton.Square.Equals(btn.Square) || (btn.Square.Piece == null || btn.Square.Piece.White != Game.CurrentPlayer.White))
-                    : (btn.Square.Piece != null && btn.Square.Piece.White == Game.CurrentPlayer.White);
+                btn.Enabled = firstClick ? (PressedButton.Square.Equals(btn.Square) || (btn.Square.Piece == null || btn.Square.Piece.Set != Game.CurrentPlayer.Set))
+                    : (btn.Square.Piece != null && btn.Square.Piece.Set == Game.CurrentPlayer.Set);
+                btn.BackColor = (btn.Square.Row + btn.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
+            }
+        }
+
+        private void UpdateSquareButtons()
+        {
+            var legalSquares = PressedButton.Square.Piece.GetLegalSquares(Game.Board);
+
+            Buttons.ForEach(btn => btn.Enabled = false);
+
+            foreach (var square in legalSquares)
+            {
+                foreach (var btn in Buttons)
+                {
+                    if (square.Equals(btn.Square))
+                    {
+                        btn.Enabled = true;
+                        btn.BackColor = Color.LightGreen;
+                        break;
+                    }
+                }
             }
         }
     }

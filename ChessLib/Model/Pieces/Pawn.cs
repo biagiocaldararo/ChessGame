@@ -8,11 +8,31 @@ namespace ChessLib.Model.Pieces
 {
     public class Pawn : Piece
     {
-        public Pawn(bool white, Square square) : base(white, square) { }
+        public bool Promoted { get; set; }
 
-        public override List<Square> GetLegalSquares()
+        public Pawn(int set, Square square) : base(set, square)
         {
-            throw new NotImplementedException();
+            Promoted = false;
+        }
+
+        public override List<Square> GetLegalSquares(Board board)
+        {
+            var legalSquare = new List<Square>();
+
+            if (!Promoted)
+            {
+                if ((Set == Board.WHITE && Square.Row < Board.DIM - 1) || (Set == Board.BLACK && Square.Row > 0))
+                {
+                    legalSquare.Add(board.Squares[Square.Row + (Set * 1), Square.Column]);
+                }
+
+                if (!Moved)
+                {
+                    legalSquare.Add(board.Squares[Square.Row + (Set * 2), Square.Column]);
+                }
+            }
+
+            return legalSquare;
         }
     }
 }

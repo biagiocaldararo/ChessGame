@@ -9,19 +9,19 @@ namespace ChessLib.Model
 {
     public class Player
     {
-        public bool White { get; set; }
+        public int Set { get; set; }
 
         public List<Piece> Pieces { get; set; }
 
-        public Player(bool white, List<Piece> pieces)
+        public Player(int set, List<Piece> pieces)
         {
-            White = white;
+            Set = set;
             Pieces = pieces;
         }
 
         public Move? MoveAPiece(Board board, Piece piece, Square square)
         {
-            return board.Move(piece, square, White);
+            return board.Move(piece, square, Set);
         }
     }
 }

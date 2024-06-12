@@ -22,7 +22,7 @@ namespace ChessLib.Model
                 }
                 return instance;
             }
-        } 
+        }
         #endregion
 
         public bool HasWinner { get; set; }
@@ -39,8 +39,8 @@ namespace ChessLib.Model
         {
             HasWinner = false;
             Board = Board.Instance;
-            Player1 = new Player(true, Board.Pieces.Where(p=>p.White).ToList());
-            Player2 = new Player(false, Board.Pieces.Where(p => !p.White).ToList());
+            Player1 = new Player(Board.WHITE, Board.Pieces.Where(p => p.Set == Board.WHITE).ToList());
+            Player2 = new Player(Board.BLACK, Board.Pieces.Where(p => p.Set == Board.BLACK).ToList());
 
             //White moves first
             CurrentPlayer = Player1;
@@ -72,7 +72,7 @@ namespace ChessLib.Model
 
         private void NextPlayerTurn()
         {
-            CurrentPlayer = CurrentPlayer.White ? Player2 : Player1;
+            CurrentPlayer = CurrentPlayer.Set == Board.WHITE ? Player2 : Player1;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace ChessLib.Model.Pieces
 {
     public abstract class Piece
     {
-        public bool White { get; set; }
+        public int Set { get; set; }
 
         public Square Square { get; set; }
 
@@ -16,15 +16,15 @@ namespace ChessLib.Model.Pieces
 
         public bool Captured { get; set; }
 
-        public Piece(bool white, Square square)
+        public Piece(int set, Square square)
         {
-            White = white;
+            Set = set;
             Square = square;
             Moved = false;
             Captured = false;
         }
 
-        public abstract List<Square> GetLegalSquares();
+        public abstract List<Square> GetLegalSquares(Board board);
 
         public void SetSquare(Square square)
         {
