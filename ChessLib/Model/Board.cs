@@ -120,5 +120,17 @@ namespace ChessLib.Model
             piece.SetSquare(square);
             piece.Square.Piece = piece;
         }
+
+        public Square GetSquare(int row, int col)
+        {
+            Square square = null; 
+
+            if (row >= 0 && row < DIM && col >= 0 && col < DIM)
+            {
+                square = Squares[row, col];
+            }
+
+            return square;
+        }
     }
 }

@@ -21,18 +21,44 @@ namespace ChessLib.Model.Pieces
 
             if (!Promoted)
             {
-                if ((Set == Board.WHITE && Square.Row < Board.DIM - 1) || (Set == Board.BLACK && Square.Row > 0))
+                //Muovi in avanti di 1
+                var square = board.GetSquare(Square.Row + (Set * 1), Square.Column);
+
+                if (square != null && square.Piece == null)
                 {
-                    legalSquare.Add(board.Squares[Square.Row + (Set * 1), Square.Column]);
+                    legalSquare.Add(square);
                 }
 
+                //Muovi in avanti di 2 se mai mosso
                 if (!Moved)
                 {
-                    legalSquare.Add(board.Squares[Square.Row + (Set * 2), Square.Column]);
+                    square = board.GetSquare(Square.Row + (Set * 2), Square.Column);
+
+                    if (square != null && square.Piece == null)
+                    {
+                        legalSquare.Add(square);
+                    }
                 }
+
+                //Cattura in diagonale
+                square = board.GetSquare(Square.Row + (Set * 1), Square.Column + 1);
+
+                if (square != null && square.Piece != null && square.Piece.Set != Set)
+                {
+                    legalSquare.Add(square);
+                }
+
+                square = board.GetSquare(Square.Row + (Set * 1), Square.Column - 1);
+
+                if (square != null && square.Piece != null && square.Piece.Set != Set)
+                {
+                    legalSquare.Add(square);
+                }
+
             }
 
             return legalSquare;
+
         }
     }
 }

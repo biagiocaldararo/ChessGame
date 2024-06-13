@@ -33,7 +33,7 @@ namespace ChessGame
         {
             SquareSize = Height / 8;
             SquareLocation_Y = Height - SquareSize;
-            SquareInitLocation_X = (int)(SquareSize * 2.4);
+            SquareInitLocation_X = Width / 2 - SquareSize * 4;
         }
 
         private void Btn_NewGame_Click(object sender, EventArgs e)
@@ -62,7 +62,9 @@ namespace ChessGame
                 PressedButton.BackColor = Color.LightBlue;
 
 #warning Provvisorio finchè non vengono implementate le regole di tutti i pezzi
-                if (PressedButton.Square.Piece.GetType().Equals(typeof(Pawn)))
+                if (PressedButton.Square.Piece.GetType().Equals(typeof(Pawn))
+                    //|| PressedButton.Square.Piece.GetType().Equals(typeof(Knight))
+                    )
                 {
                     UpdateSquareButtons();
                 }
@@ -77,7 +79,6 @@ namespace ChessGame
                 if (PressedButton.Square.Equals(currentButton.Square))
                 {
                     PressedButton.BackColor = (PressedButton.Square.Row + PressedButton.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
-                    PressedButton = null;
                 }
                 else
                 {
@@ -86,6 +87,8 @@ namespace ChessGame
                 }
 
                 UpdateButtons(false);
+                PressedButton = null;
+
             }
         }
 
@@ -179,8 +182,6 @@ namespace ChessGame
 
             PressedButton.BackgroundImage = null;
             PressedButton.BackColor = (PressedButton.Square.Row + PressedButton.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
-            PressedButton = null;
-
         }
 
         private void UpdateButtons(bool firstClick)
@@ -189,7 +190,10 @@ namespace ChessGame
             {
                 btn.Enabled = firstClick ? (PressedButton.Square.Equals(btn.Square) || (btn.Square.Piece == null || btn.Square.Piece.Set != Game.CurrentPlayer.Set))
                     : (btn.Square.Piece != null && btn.Square.Piece.Set == Game.CurrentPlayer.Set);
-                btn.BackColor = (btn.Square.Row + btn.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
+                if (PressedButton != null && !PressedButton.Square.Equals(btn.Square))
+                {
+                    btn.BackColor = (btn.Square.Row + btn.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
+                }
             }
         }
 
@@ -198,6 +202,7 @@ namespace ChessGame
             var legalSquares = PressedButton.Square.Piece.GetLegalSquares(Game.Board);
 
             Buttons.ForEach(btn => btn.Enabled = false);
+            PressedButton.Enabled = true;
 
             foreach (var square in legalSquares)
             {
@@ -206,7 +211,7 @@ namespace ChessGame
                     if (square.Equals(btn.Square))
                     {
                         btn.Enabled = true;
-                        btn.BackColor = Color.LightGreen;
+                        btn.BackColor = square.Piece == null ? Color.LightGreen : Color.LightCoral;
                         break;
                     }
                 }
