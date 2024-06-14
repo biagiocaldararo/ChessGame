@@ -78,6 +78,7 @@
             btn_Undo.TabIndex = 3;
             btn_Undo.Text = "Undo";
             btn_Undo.UseVisualStyleBackColor = true;
+            btn_Undo.Visible = false;
             btn_Undo.Click += btn_Undo_Click;
             // 
             // Form1

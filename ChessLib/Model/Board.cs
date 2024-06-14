@@ -114,16 +114,9 @@ namespace ChessLib.Model
             return move;
         }
 
-        public void SetSquare(Piece piece, Square square)
-        {
-            //piece.Square.RemovePiece();
-            piece.SetSquare(square);
-            piece.Square.Piece = piece;
-        }
-
         public Square GetSquare(int row, int col)
         {
-            Square square = null; 
+            Square square = null;
 
             if (row >= 0 && row < DIM && col >= 0 && col < DIM)
             {
@@ -131,6 +124,24 @@ namespace ChessLib.Model
             }
 
             return square;
+        }
+
+        public void SetSquare(Piece piece, Square square)
+        {
+            var squareFrom = piece.Square;
+            piece.SetSquare(square);
+
+            squareFrom.Piece = null;
+            piece.Square.Piece = piece;
+        }
+
+        public void UndoSetSquare(Move move)
+        {
+            var squareFrom = move.SquareFrom;
+            move.Piece.SetSquare(squareFrom);
+
+            move.SquareTo.Piece = null;
+            move.SquareFrom.Piece = move.Piece;
         }
     }
 }

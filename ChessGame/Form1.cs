@@ -20,7 +20,7 @@ namespace ChessGame
 
         private Game Game;
 
-        private SquareButton PressedButton;
+        private SquareButton SelectedButton;
 
         private List<SquareButton> Buttons;
 
@@ -44,6 +44,7 @@ namespace ChessGame
 
             btn_NewGame.Enabled = false;
             btn_Concede.Visible = true;
+            btn_Undo.Visible = true;
             btn_Undo.Enabled = Game.History.Moves.Count > 0;
         }
 
@@ -57,32 +58,33 @@ namespace ChessGame
             var currentButton = (SquareButton)sender;
 
             //Se clicco la prima volta, evidenzio la casella e attivo le caselle che posso raggiungere
-            if (PressedButton == null)
+            if (SelectedButton == null)
             {
-                PressedButton = currentButton;
-                PressedButton.BackColor = Color.LightBlue;
+                SelectedButton = currentButton;
+                SelectedButton.Highlight();
 
                 UpdateSquareButtons();
             }
             else
             {
                 //se clicco la casella che ho selezionato, annullo la selezione e il controllo resta al giocatore corrente
-                if (PressedButton.Square.Equals(currentButton.Square))
+                if (SelectedButton.Square.Equals(currentButton.Square))
                 {
-                    PressedButton.BackColor = (PressedButton.Square.Row + PressedButton.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
+                    SelectedButton.BackColor = (SelectedButton.Square.Row + SelectedButton.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
                 }
                 else
                 {
-                    Game.MakeAMove(PressedButton.Square.Piece, currentButton.Square);
-                    UpdateSquareButton(currentButton);
+                    Game.MakeAMove(SelectedButton.Square.Piece, currentButton.Square);
+                    currentButton.UpdateImage();
+
+                    SelectedButton.BackgroundImage = null;
+                    SelectedButton.RemoveHighlight();
+
                 }
 
                 UpdateButtons(false);
-                PressedButton = null;
-
+                SelectedButton = null;
             }
-
-
         }
 
         private void btn_Concede_Click(object sender, EventArgs e)
@@ -117,13 +119,8 @@ namespace ChessGame
         {
             var newButton = new SquareButton(square)
             {
-                Square = square,
-
                 Location = new Point(x, y),
                 Size = new Size(SquareSize, SquareSize),
-                BackColor = (square.Row + square.Column) % 2 == 0 ? Color.DarkGray : Color.White,
-                BackgroundImage = square.Piece != null ? GetImage(square.Piece.GetType().Name, square.Piece.Set) : null,
-                BackgroundImageLayout = ImageLayout.Stretch,
                 Enabled = square.Piece != null && square.Piece.Set == Game.CurrentPlayer.Set,
             };
 
@@ -132,61 +129,14 @@ namespace ChessGame
             return newButton;
         }
 
-        private static Image GetImage(string type, int set)
-        {
-            Image image = null;
-
-            switch (type)
-            {
-                case Constants.PIECES_PAWN:
-                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_PAWN)
-                        : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_PAWN_D);
-                    break;
-                case Constants.PIECES_ROOK:
-                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_ROOK)
-                      : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_ROOK_D);
-                    break;
-                case Constants.PIECES_KNIGHT:
-                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_KNIGHT)
-                        : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_KNIGHT_D);
-                    break;
-                case Constants.PIECES_BISHOP:
-                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_BISHOP)
-                        : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_BISHOP_D);
-                    break;
-                case Constants.PIECES_QUEEN:
-                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_QUEEN)
-                        : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_QUEEN_D);
-                    break;
-                case Constants.PIECES_KING:
-                    image = set == Board.WHITE ? Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_KING)
-                        : Image.FromFile(Environment.CurrentDirectory + Constants.IMAGES_KING_D);
-                    break;
-            }
-
-            return image;
-        }
-
-        private void UpdateSquareButton(SquareButton squareButton)
-        {
-            //squareButton.BackgroundImage = PressedButton.BackgroundImage;
-            squareButton.BackgroundImage = squareButton.Square.Piece != null ?
-                GetImage(squareButton.Square.Piece.GetType().Name, squareButton.Square.Piece.Set) : null;
-
-            if (PressedButton != null)
-            {
-                PressedButton.BackgroundImage = null;
-                PressedButton.BackColor = (PressedButton.Square.Row + PressedButton.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
-            }
-        }
-
         private void UpdateButtons(bool firstClick)
         {
             foreach (var btn in Buttons)
             {
-                btn.Enabled = firstClick ? (PressedButton.Square.Equals(btn.Square) || (btn.Square.Piece == null || btn.Square.Piece.Set != Game.CurrentPlayer.Set))
+                btn.Enabled = firstClick ? (SelectedButton.Square.Equals(btn.Square) || (btn.Square.Piece == null || btn.Square.Piece.Set != Game.CurrentPlayer.Set))
                     : (btn.Square.Piece != null && btn.Square.Piece.Set == Game.CurrentPlayer.Set);
-                if (PressedButton != null && !PressedButton.Square.Equals(btn.Square))
+
+                if (SelectedButton != null && !SelectedButton.Square.Equals(btn.Square))
                 {
                     btn.BackColor = (btn.Square.Row + btn.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
                 }
@@ -197,10 +147,10 @@ namespace ChessGame
 
         private void UpdateSquareButtons()
         {
-            var legalSquares = PressedButton.Square.Piece.GetLegalSquares(Game.Board);
+            var legalSquares = SelectedButton.Square.Piece.GetLegalSquares(Game.Board);
 
             Buttons.ForEach(btn => btn.Enabled = false);
-            PressedButton.Enabled = true;
+            SelectedButton.Enabled = true;
 
             foreach (var square in legalSquares)
             {
@@ -221,7 +171,8 @@ namespace ChessGame
             var square = Game.UndoMove();
             var currentButton = SquareButton.GetSquareButtton(Buttons, square);
 
-            UpdateSquareButton(currentButton);
+            currentButton.UpdateImage();
+
             UpdateButtons(false);
 
             btn_Undo.Enabled = Game.History.Moves.Count > 0;
