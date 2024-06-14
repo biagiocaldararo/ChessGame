@@ -44,6 +44,7 @@ namespace ChessGame
 
             btn_NewGame.Enabled = false;
             btn_Concede.Visible = true;
+            btn_Undo.Enabled = Game.History.Moves.Count > 0;
         }
 
         private void Btn_Exit_Click(object sender, EventArgs e)
@@ -80,6 +81,8 @@ namespace ChessGame
                 PressedButton = null;
 
             }
+
+
         }
 
         private void btn_Concede_Click(object sender, EventArgs e)
@@ -170,8 +173,11 @@ namespace ChessGame
             squareButton.BackgroundImage = squareButton.Square.Piece != null ?
                 GetImage(squareButton.Square.Piece.GetType().Name, squareButton.Square.Piece.Set) : null;
 
-            PressedButton.BackgroundImage = null;
-            PressedButton.BackColor = (PressedButton.Square.Row + PressedButton.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
+            if (PressedButton != null)
+            {
+                PressedButton.BackgroundImage = null;
+                PressedButton.BackColor = (PressedButton.Square.Row + PressedButton.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
+            }
         }
 
         private void UpdateButtons(bool firstClick)
@@ -185,6 +191,8 @@ namespace ChessGame
                     btn.BackColor = (btn.Square.Row + btn.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
                 }
             }
+
+            btn_Undo.Enabled = Game.History.Moves.Count > 0;
         }
 
         private void UpdateSquareButtons()
@@ -206,6 +214,17 @@ namespace ChessGame
                     }
                 }
             }
+        }
+
+        private void btn_Undo_Click(object sender, EventArgs e)
+        {
+            var square = Game.UndoMove();
+            var currentButton = SquareButton.GetSquareButtton(Buttons, square);
+
+            UpdateSquareButton(currentButton);
+            UpdateButtons(false);
+
+            btn_Undo.Enabled = Game.History.Moves.Count > 0;
         }
     }
 }

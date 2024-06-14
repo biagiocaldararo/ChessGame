@@ -15,9 +15,17 @@ namespace ChessLib.Model
 
         public Square SquareTo { get; }
 
-        public Piece? CapturedPiece { get; }
+        public Piece CapturedPiece { get; }
 
         public bool Check { get; private set; }
+
+        public bool Capture
+        {
+            get
+            {
+                return CapturedPiece != null;
+            }
+        }
 
         public bool CheckMate
         {

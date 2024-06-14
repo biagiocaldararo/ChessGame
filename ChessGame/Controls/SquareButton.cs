@@ -15,5 +15,21 @@ namespace ChessGame.Controls
         {
             Square = square;
         }
+
+        public static SquareButton GetSquareButtton(List<SquareButton> buttons, Square square)
+        {
+            SquareButton squareButton = null;
+
+            foreach (var btn in buttons)
+            {
+                if (btn.Square.Equals(square))
+                {
+                    squareButton = btn;
+                    break;
+                }
+            }
+
+            return squareButton;
+        }
     }
 }

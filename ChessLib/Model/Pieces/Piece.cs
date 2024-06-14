@@ -26,6 +26,20 @@ namespace ChessLib.Model.Pieces
 
         public abstract List<Square> GetLegalSquares(Board board);
 
+        public virtual Square UndoMove(Board board, Move move)
+        {
+            Square = move.SquareFrom;
+
+            if (move.CapturedPiece != null) 
+            {
+                move.CapturedPiece.Captured = false;
+            }
+
+            board.SetSquare(this, Square);
+
+            return Square;
+        }
+
         public void SetSquare(Square square)
         {
             Square = square;

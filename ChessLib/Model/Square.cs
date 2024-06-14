@@ -36,5 +36,10 @@ namespace ChessLib.Model
         {
             return square != null && Row == square.Row && Column == square.Column;
         }
+
+        public string ToString()
+        {
+            return Row + "," + Column;  
+        }
     }
 }

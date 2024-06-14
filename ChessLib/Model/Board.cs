@@ -94,9 +94,9 @@ namespace ChessLib.Model
             #endregion
         }
 
-        public Move? Move(Piece piece, Square square, int set)
+        public Move Move(Piece piece, Square square, int set)
         {
-            Move? move = null;
+            Move move = null;
 
             if (set == piece.Set)
             {
@@ -116,7 +116,7 @@ namespace ChessLib.Model
 
         public void SetSquare(Piece piece, Square square)
         {
-            piece.Square.RemovePiece();
+            //piece.Square.RemovePiece();
             piece.SetSquare(square);
             piece.Square.Piece = piece;
         }
