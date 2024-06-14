@@ -25,7 +25,7 @@ namespace ChessLib.Model
         }
         #endregion
 
-        public bool HasWinner { get; set; }
+        public Board Board { get; set; }
 
         public Player Player1 { get; set; }
 
@@ -33,17 +33,21 @@ namespace ChessLib.Model
 
         public Player CurrentPlayer { get; set; }
 
-        public Board Board { get; set; }
+        public List<Move> History { get; set; }
+
+        public bool HasWinner { get; set; }
 
         private Game()
         {
-            HasWinner = false;
             Board = Board.Instance;
+
             Player1 = new Player(Board.WHITE, Board.Pieces.Where(p => p.Set == Board.WHITE).ToList());
             Player2 = new Player(Board.BLACK, Board.Pieces.Where(p => p.Set == Board.BLACK).ToList());
+            CurrentPlayer = Player1; //White moves first
 
-            //White moves first
-            CurrentPlayer = Player1;
+            History = new List<Move>();
+
+            HasWinner = false;
         }
 
         public bool MakeAMove(Piece piece, Square square)
@@ -52,7 +56,7 @@ namespace ChessLib.Model
 
             if (!HasWinner)
             {
-                Move? move = CurrentPlayer.MoveAPiece(Board, piece, square);
+                Move move = CurrentPlayer.MoveAPiece(Board, piece, square);
 
                 if (move != null)
                 {
