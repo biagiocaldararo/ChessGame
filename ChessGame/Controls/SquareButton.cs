@@ -34,20 +34,9 @@ namespace ChessGame.Controls
             BackgroundImage = Square.Piece != null ? GetImage(Square.Piece.GetType().Name, Square.Piece.Set) : null;
         }
 
-        public static SquareButton GetSquareButtton(List<SquareButton> buttons, Square square)
+        public static SquareButton GetSquareButton(List<SquareButton> buttons, Square square)
         {
-            SquareButton squareButton = null;
-
-            foreach (var btn in buttons)
-            {
-                if (btn.Square.Equals(square))
-                {
-                    squareButton = btn;
-                    break;
-                }
-            }
-
-            return squareButton;
+            return buttons.FirstOrDefault(btn => btn.Square.Equals(square));
         }
 
         private static Image GetImage(string type, int set)

@@ -67,22 +67,17 @@ namespace ChessGame
             }
             else
             {
-                //se clicco la casella che ho selezionato, annullo la selezione e il controllo resta al giocatore corrente
-                if (SelectedButton.Square.Equals(currentButton.Square))
-                {
-                    SelectedButton.BackColor = (SelectedButton.Square.Row + SelectedButton.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
-                }
-                else
+                if (!SelectedButton.Square.Equals(currentButton.Square))
                 {
                     Game.MakeAMove(SelectedButton.Square.Piece, currentButton.Square);
                     currentButton.UpdateImage();
 
                     SelectedButton.BackgroundImage = null;
                     SelectedButton.RemoveHighlight();
-
                 }
 
-                UpdateButtons(false);
+                SelectedButton.RemoveHighlight();
+                UpdateButtons();
                 SelectedButton = null;
             }
         }
@@ -129,16 +124,16 @@ namespace ChessGame
             return newButton;
         }
 
-        private void UpdateButtons(bool firstClick)
+        private void UpdateButtons()
         {
             foreach (var btn in Buttons)
             {
-                btn.Enabled = firstClick ? (SelectedButton.Square.Equals(btn.Square) || (btn.Square.Piece == null || btn.Square.Piece.Set != Game.CurrentPlayer.Set))
-                    : (btn.Square.Piece != null && btn.Square.Piece.Set == Game.CurrentPlayer.Set);
+                btn.Enabled = btn.Square.Piece != null && btn.Square.Piece.Set == Game.CurrentPlayer.Set;
+                btn.UpdateImage();
 
                 if (SelectedButton != null && !SelectedButton.Square.Equals(btn.Square))
                 {
-                    btn.BackColor = (btn.Square.Row + btn.Square.Column) % 2 == 0 ? Color.DarkGray : Color.White;
+                    btn.RemoveHighlight();
                 }
             }
 
@@ -169,11 +164,10 @@ namespace ChessGame
         private void btn_Undo_Click(object sender, EventArgs e)
         {
             var square = Game.UndoMove();
-            var currentButton = SquareButton.GetSquareButtton(Buttons, square);
+            var currentButton = SquareButton.GetSquareButton(Buttons, square);
 
             currentButton.UpdateImage();
-
-            UpdateButtons(false);
+            UpdateButtons();
 
             btn_Undo.Enabled = Game.History.Moves.Count > 0;
         }
