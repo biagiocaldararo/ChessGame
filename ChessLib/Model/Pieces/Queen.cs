@@ -14,7 +14,7 @@ namespace ChessLib.Model.Pieces
         {
             var legalSquare = new List<Square>();
 
-            var directions = new List<(int Row, int Col)> { (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1) };
+            var directions = new List<(int Row, int Col)> { (-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, -1) };
 
             foreach (var d in directions)
             {
