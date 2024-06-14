@@ -61,17 +61,7 @@ namespace ChessGame
                 PressedButton = currentButton;
                 PressedButton.BackColor = Color.LightBlue;
 
-#warning Provvisorio finchè non vengono implementate le regole di tutti i pezzi
-                if (PressedButton.Square.Piece.GetType().Equals(typeof(Pawn))
-                    || PressedButton.Square.Piece.GetType().Equals(typeof(Knight))
-                    )
-                {
-                    UpdateSquareButtons();
-                }
-                else
-                {
-                    UpdateButtons(true);
-                }
+                UpdateSquareButtons();
             }
             else
             {
