@@ -129,16 +129,18 @@ namespace ChessLib.Model
         public void SetSquare(Piece piece, Square square)
         {
             var squareFrom = piece.Square;
-            piece.SetSquare(square);
+
+            piece.Square = square;
+            piece.Moved = true;
 
             squareFrom.Piece = null;
             piece.Square.Piece = piece;
         }
 
-        public void UndoSetSquare(Move move)
+        public void SetSquare(Move move)
         {
             var squareFrom = move.SquareFrom;
-            move.Piece.SetSquare(squareFrom);
+            move.Piece.Square = squareFrom;
 
             move.SquareTo.Piece = null;
             move.SquareFrom.Piece = move.Piece;

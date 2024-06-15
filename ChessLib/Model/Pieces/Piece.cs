@@ -28,20 +28,13 @@ namespace ChessLib.Model.Pieces
 
         public virtual Square UndoMove(Board board, Move move)
         {
-            if (move.CapturedPiece != null) 
-            {
-                move.CapturedPiece.Captured = false;
-            }
-
-            board.UndoSetSquare(move);
-
-            return Square;
+            return move.Undo();
         }
 
-        public void SetSquare(Square square)
-        {
-            Square = square;
-            Moved = true;
-        }
+        //public void SetSquare(Square square)
+        //{
+        //    Square = square;
+        //    Moved = true;
+        //}
     }
 }

@@ -87,7 +87,6 @@ namespace ChessLib.Model
 
             var lastMove = History.GetLastMove();
 
-
             if (lastMove != null)
             {
                 square = lastMove.Piece.UndoMove(Board, lastMove);
