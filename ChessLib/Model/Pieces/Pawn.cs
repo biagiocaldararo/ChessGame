@@ -50,17 +50,20 @@ namespace ChessLib.Model.Pieces
         {
             var legalSquare = new List<Square>();
 
+            var directions = new List<int>() { 1, -1 };
+
             if (!Promoted)
             {
-                //Muovi in avanti di 1
+                #region Muovi avanti di 1
                 var square = board.GetSquare(Square.Row + (Set * 1), Square.Column);
 
                 if (square != null && square.Piece == null)
                 {
                     legalSquare.Add(square);
                 }
+                #endregion
 
-                //Muovi in avanti di 2 se mai mosso
+                #region Muovi avanti di 2
                 if (!Moved)
                 {
                     square = board.GetSquare(Square.Row + (Set * 2), Square.Column);
@@ -70,54 +73,40 @@ namespace ChessLib.Model.Pieces
                         legalSquare.Add(square);
                     }
                 }
+                #endregion
 
-                //Cattura in diagonale
-                square = board.GetSquare(Square.Row + (Set * 1), Square.Column + 1);
-
-                if (square != null && square.Piece != null && square.Piece.Set != Set)
+                #region Cattura in diagonale
+                foreach (var d in directions)
                 {
-                    legalSquare.Add(square);
-                }
+                    square = board.GetSquare(Square.Row + (Set * 1), Square.Column + d);
 
-                square = board.GetSquare(Square.Row + (Set * 1), Square.Column - 1);
-
-                if (square != null && square.Piece != null && square.Piece.Set != Set)
-                {
-                    legalSquare.Add(square);
-                }
-
-                //EnPassant
-
-                square = board.GetSquare(Square.Row, Square.Column + 1);
-
-                if (square != null && square.Piece != null && square.Piece.Set != Set)
-                {
-                    var lastMove = board.History.GetLastMove();
-
-                    if (lastMove != null && lastMove.FirstMove && square.Piece.Equals(lastMove.Piece))
+                    if (square != null && square.Piece != null && square.Piece.Set != Set)
                     {
-                        square = board.GetSquare(Square.Row + 1, Square.Column + 1);
-                        square.EnPassantMove = lastMove;
-
                         legalSquare.Add(square);
                     }
                 }
+                #endregion
 
-                square = board.GetSquare(Square.Row, Square.Column - 1);
-
-                if (square != null && square.Piece != null && square.Piece.Set != Set)
+                #region En passant
+                foreach (var d in directions)
                 {
-                    var lastMove = board.History.GetLastMove();
+                    square = board.GetSquare(Square.Row, Square.Column + d);
 
-                    if (lastMove != null && lastMove.FirstMove && square.Piece.Equals(lastMove.Piece))
+                    if (square != null && square.Piece != null && square.Piece.Set != Set)
                     {
-                        square = board.GetSquare(Square.Row + 1, Square.Column - 1);
-                        square.EnPassantMove = lastMove;
+                        var lastMove = board.History.GetLastMove();
 
-                        legalSquare.Add(square);
+                        if (lastMove != null && lastMove.FirstMove && square.Piece.Equals(lastMove.Piece))
+                        {
+                            square = board.GetSquare(Square.Row + 1, Square.Column + d);
+                            square.EnPassantMove = lastMove;
+
+                            legalSquare.Add(square);
+                            break;
+                        }
                     }
-                }
-
+                } 
+                #endregion
             }
 
             return legalSquare;

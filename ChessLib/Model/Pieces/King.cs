@@ -16,6 +16,7 @@ namespace ChessLib.Model.Pieces
 
             var directions = new List<(int Row, int Col)> { (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1) };
 
+            #region Standard moves
             foreach (var d in directions)
             {
                 var square = board.GetSquare(Square.Row + d.Row, Square.Column + d.Col);
@@ -25,6 +26,41 @@ namespace ChessLib.Model.Pieces
                     legalSquare.Add(square);
                 }
             }
+            #endregion
+
+            #region Castling (Arrocco)
+
+            //Dal lato della regina: 4 - Dal lato della re: 3
+            if (!Moved)
+            {
+                var sides = new List<(int Side, int Dir)>() { (4, -1), (3, 1) };
+
+                foreach (var s in sides)
+                {
+                    var square = board.Squares[Square.Row, Square.Column + (s.Side * s.Dir)];
+
+                    if (square.Piece != null && !square.Piece.Moved)
+                    {
+                        bool add = false;
+
+                        for (int i = 1; i < s.Side && !add; i++)
+                        {
+                            square = board.Squares[Square.Row, Square.Column + (s.Dir * i)];
+                            add = square.Piece != null;
+                        }
+
+                        if (!add)
+                        {
+                            square = board.Squares[Square.Row, Square.Column + (s.Dir * 2)];
+                            square.Castling = true;
+
+                            legalSquare.Add(square);
+                        }
+                    }
+                }
+            }
+
+            #endregion
 
             return legalSquare;
         }

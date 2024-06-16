@@ -17,11 +17,14 @@ namespace ChessLib.Model
 
         public Move EnPassantMove { get; set; }
 
+        public bool Castling { get; set; }
+
         public Square(int row, int column)
         {
             Row = row;
             Column = column;
             EnPassantMove = null;
+            Castling = false;
         }
 
         public void Add(Piece p, ref List<Piece> pieces)
