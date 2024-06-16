@@ -15,11 +15,11 @@ namespace ChessLib.Model
 
         public Square SquareTo { get; }
 
-        public Piece CapturedPiece { get; }
+        public Piece CapturedPiece { get; set; }
 
-        public bool FirstMove { get; set; }
+        public bool FirstMove { get; }
 
-        public bool Check { get; private set; }
+        public bool Check { get; set; }
 
         public bool CheckMate
         {
@@ -40,16 +40,21 @@ namespace ChessLib.Model
 
         public Square Undo()
         {
-            if (CapturedPiece != null)
-            {
-                CapturedPiece.Captured = false;
-            }
+            
+            Piece.Square = SquareFrom;
+            SquareFrom.Piece = Piece;
 
             Piece.Moved = !FirstMove;
 
-            Piece.Square = SquareFrom;
-            SquareTo.Piece = null;
-            SquareFrom.Piece = Piece;
+            if (CapturedPiece != null)
+            {
+                CapturedPiece.Captured = false;
+                SquareTo.Piece = CapturedPiece;
+            }
+            else
+            {
+                SquareTo.Piece = null;
+            }
 
             return SquareFrom;
         }

@@ -105,6 +105,7 @@ namespace ChessLib.Model
                 if (square.Piece != null)
                 {
                     square.Piece.Captured = true;
+                    move.CapturedPiece = square.Piece;
                 }
 
                 SetSquare(piece, square);
