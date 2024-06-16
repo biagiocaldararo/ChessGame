@@ -33,8 +33,6 @@ namespace ChessLib.Model
 
         public Player CurrentPlayer { get; set; }
 
-        public History History { get; set; }
-
         public bool HasWinner { get; set; }
 
         private Game()
@@ -44,8 +42,6 @@ namespace ChessLib.Model
             Player1 = new Player(Board.WHITE, Board.Pieces.Where(p => p.Set == Board.WHITE).ToList());
             Player2 = new Player(Board.BLACK, Board.Pieces.Where(p => p.Set == Board.BLACK).ToList());
             CurrentPlayer = Player1; //White moves first
-
-            History = History.Instance;
 
             HasWinner = false;
         }
@@ -60,7 +56,7 @@ namespace ChessLib.Model
 
                 if (move != null)
                 {
-                    History.Moves.Add(move);
+                    Board.History.Moves.Add(move);
 
                     if (move.CheckMate)
                     {
@@ -85,14 +81,14 @@ namespace ChessLib.Model
         {
             Square square = null;
 
-            var lastMove = History.GetLastMove();
+            var lastMove = Board.History.GetLastMove();
 
             if (lastMove != null)
             {
                 square = lastMove.Piece.UndoMove(Board, lastMove);
             }
 
-            History.RemoveLastMove();
+            Board.History.RemoveLastMove();
 
             NextPlayerTurn();
 

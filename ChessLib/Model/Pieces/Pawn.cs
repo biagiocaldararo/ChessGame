@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,9 +11,16 @@ namespace ChessLib.Model.Pieces
     {
         public bool Promoted { get; set; }
 
-        public Pawn(int set, Square square) : base(set, square)
+        public Pawn(int id, int set, Square square) : base(id, set, square)
         {
             Promoted = false;
+        }
+
+        public override Move Move(Square square)
+        {
+            var move = base.Move(square);
+
+            return move;
         }
 
         public override List<Square> GetLegalSquares(Board board)
@@ -53,6 +61,38 @@ namespace ChessLib.Model.Pieces
                 if (square != null && square.Piece != null && square.Piece.Set != Set)
                 {
                     legalSquare.Add(square);
+                }
+
+                //EnPassant
+
+                square = board.GetSquare(Square.Row, Square.Column + 1);
+
+                if (square != null && square.Piece != null && square.Piece.Set != Set)
+                {
+                    var lastMove = board.History.GetLastMove();
+
+                    if (lastMove != null && lastMove.FirstMove && square.Piece.Equals(lastMove.Piece))
+                    {
+                        square = board.GetSquare(Square.Row + 1, Square.Column + 1);
+                        square.EnPassant = true;
+
+                        legalSquare.Add(square);
+                    }
+                }
+
+                square = board.GetSquare(Square.Row, Square.Column - 1);
+
+                if (square != null && square.Piece != null && square.Piece.Set != Set)
+                {
+                    var lastMove = board.History.GetLastMove();
+
+                    if (lastMove != null && lastMove.FirstMove && square.Piece.Equals(lastMove.Piece))
+                    {
+                        square = board.GetSquare(Square.Row + 1, Square.Column - 1);
+                        square.EnPassant = true;
+
+                        legalSquare.Add(square);
+                    }
                 }
 
             }

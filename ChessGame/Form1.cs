@@ -45,7 +45,7 @@ namespace ChessGame
             btn_NewGame.Enabled = false;
             btn_Concede.Visible = true;
             btn_Undo.Visible = true;
-            btn_Undo.Enabled = Game.History.Moves.Count > 0;
+            btn_Undo.Enabled = Game.Board.History.Moves.Count > 0;
         }
 
         private void Btn_Exit_Click(object sender, EventArgs e)
@@ -64,6 +64,8 @@ namespace ChessGame
                 SelectedButton.Highlight();
 
                 UpdateSquareButtons();
+
+                btn_Undo.Enabled = false;
             }
             else
             {
@@ -79,6 +81,8 @@ namespace ChessGame
                 SelectedButton.RemoveHighlight();
                 UpdateButtons();
                 SelectedButton = null;
+
+                btn_Undo.Enabled = true;
             }
         }
 
@@ -137,7 +141,7 @@ namespace ChessGame
                 }
             }
 
-            btn_Undo.Enabled = Game.History.Moves.Count > 0;
+            btn_Undo.Enabled = Game.Board.History.Moves.Count > 0;
         }
 
         private void UpdateSquareButtons()
@@ -154,7 +158,7 @@ namespace ChessGame
                     if (square.Equals(btn.Square))
                     {
                         btn.Enabled = true;
-                        btn.BackColor = square.Piece == null ? Color.LightGreen : Color.LightCoral;
+                        btn.BackColor = square.Piece != null || square.EnPassant ? Color.LightCoral : Color.LightGreen;
                         break;
                     }
                 }
@@ -169,7 +173,7 @@ namespace ChessGame
             currentButton.UpdateImage();
             UpdateButtons();
 
-            btn_Undo.Enabled = Game.History.Moves.Count > 0;
+            btn_Undo.Enabled = Game.Board.History.Moves.Count > 0;
         }
     }
 }

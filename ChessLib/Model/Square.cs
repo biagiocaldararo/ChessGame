@@ -15,10 +15,13 @@ namespace ChessLib.Model
 
         public int Column { get; }
 
+        public bool EnPassant { get; set; }
+
         public Square(int row, int column)
         {
             Row = row;
             Column = column;
+            EnPassant = false;
         }
 
         public void Add(Piece p, ref List<Piece> pieces)

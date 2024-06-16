@@ -8,7 +8,7 @@ namespace ChessLib.Model.Pieces
 {
     public class Knight : Piece
     {
-        public Knight(int set, Square square) : base(set, square) { }
+        public Knight(int id, int set, Square square) : base(id, set, square) { }
 
         public override List<Square> GetLegalSquares(Board board)
         {
