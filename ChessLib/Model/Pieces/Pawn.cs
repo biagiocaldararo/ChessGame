@@ -20,7 +20,30 @@ namespace ChessLib.Model.Pieces
         {
             var move = base.Move(square);
 
+            if (square.EnPassantMove != null)
+            {
+                square.EnPassantMove.Piece.Captured = true;
+                move.CapturedPiece = square.EnPassantMove.Piece;
+                square.EnPassantMove.SquareTo.Piece = null;
+                square.EnPassantMove = null;
+
+                move.EnPassant = true;
+            }
+
             return move;
+        }
+
+        public override Square UndoMove(Board board, Move move)
+        {
+            var square = base.UndoMove(board, move);
+
+            if (move.EnPassant)
+            {
+                move.CapturedPiece.Captured = false;
+                move.CapturedPiece.Square.Piece = move.CapturedPiece;
+            }
+
+            return square;
         }
 
         public override List<Square> GetLegalSquares(Board board)
@@ -74,7 +97,7 @@ namespace ChessLib.Model.Pieces
                     if (lastMove != null && lastMove.FirstMove && square.Piece.Equals(lastMove.Piece))
                     {
                         square = board.GetSquare(Square.Row + 1, Square.Column + 1);
-                        square.EnPassant = true;
+                        square.EnPassantMove = lastMove;
 
                         legalSquare.Add(square);
                     }
@@ -89,7 +112,7 @@ namespace ChessLib.Model.Pieces
                     if (lastMove != null && lastMove.FirstMove && square.Piece.Equals(lastMove.Piece))
                     {
                         square = board.GetSquare(Square.Row + 1, Square.Column - 1);
-                        square.EnPassant = true;
+                        square.EnPassantMove = lastMove;
 
                         legalSquare.Add(square);
                     }

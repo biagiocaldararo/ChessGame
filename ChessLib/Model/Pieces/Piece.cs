@@ -31,7 +31,15 @@ namespace ChessLib.Model.Pieces
 
         public virtual Move Move(Square square)
         {
-            return new Move(this, square);
+            var move =  new Move(this, square);
+
+            if (square.Piece != null)
+            {
+                square.Piece.Captured = true;
+                move.CapturedPiece = square.Piece;
+            }
+
+            return move;
         }
 
         public virtual Square UndoMove(Board board, Move move)

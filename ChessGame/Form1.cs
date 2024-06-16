@@ -158,7 +158,7 @@ namespace ChessGame
                     if (square.Equals(btn.Square))
                     {
                         btn.Enabled = true;
-                        btn.BackColor = square.Piece != null || square.EnPassant ? Color.LightCoral : Color.LightGreen;
+                        btn.BackColor = square.Piece != null || square.EnPassantMove != null ? Color.LightCoral : Color.LightGreen;
                         break;
                     }
                 }

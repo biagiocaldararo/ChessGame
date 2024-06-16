@@ -19,6 +19,8 @@ namespace ChessLib.Model
 
         public bool FirstMove { get; }
 
+        public bool EnPassant { get; set; }
+
         public bool Check { get; set; }
 
         public bool CheckMate
@@ -36,17 +38,17 @@ namespace ChessLib.Model
             SquareTo = squareTo;
             FirstMove = !piece.Moved;
             Check = false;
+            EnPassant = false;
         }
 
         public Square Undo()
         {
-            
             Piece.Square = SquareFrom;
             SquareFrom.Piece = Piece;
 
             Piece.Moved = !FirstMove;
 
-            if (CapturedPiece != null)
+            if (CapturedPiece != null && !EnPassant)
             {
                 CapturedPiece.Captured = false;
                 SquareTo.Piece = CapturedPiece;

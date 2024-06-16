@@ -110,12 +110,6 @@ namespace ChessLib.Model
             {
                 move = piece.Move(square);
 
-                if (square.Piece != null)
-                {
-                    square.Piece.Captured = true;
-                    move.CapturedPiece = square.Piece;
-                }
-
                 SetSquare(piece, square);
 
             }

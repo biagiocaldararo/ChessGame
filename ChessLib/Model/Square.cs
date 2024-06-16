@@ -9,19 +9,19 @@ namespace ChessLib.Model
 {
     public class Square
     {
-        public Piece? Piece { get; set; }
+        public Piece Piece { get; set; }
 
         public int Row { get; }
 
         public int Column { get; }
 
-        public bool EnPassant { get; set; }
+        public Move EnPassantMove { get; set; }
 
         public Square(int row, int column)
         {
             Row = row;
             Column = column;
-            EnPassant = false;
+            EnPassantMove = null;
         }
 
         public void Add(Piece p, ref List<Piece> pieces)
