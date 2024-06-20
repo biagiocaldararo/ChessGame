@@ -19,7 +19,7 @@ namespace ChessLib.Model
             Pieces = pieces;
         }
 
-        public Move? MoveAPiece(Board board, Piece piece, Square square)
+        public Move MoveAPiece(Board board, Piece piece, Square square)
         {
             return board.Move(piece, square, Set);
         }

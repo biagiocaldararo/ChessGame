@@ -96,7 +96,7 @@ namespace ChessLib.Model.Pieces
                     {
                         var lastMove = board.History.GetLastMove();
 
-                        if (lastMove != null && lastMove.FirstMove && square.Piece.Equals(lastMove.Piece))
+                        if (lastMove != null && lastMove.First && square.Piece.Equals(lastMove.Piece))
                         {
                             square = board.GetSquare(Square.Row + 1, Square.Column + d);
                             square.EnPassantMove = lastMove;

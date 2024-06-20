@@ -10,6 +10,30 @@ namespace ChessLib.Model.Pieces
     {
         public King(int id, int set, Square square) : base(id, set, square) { }
 
+        public override Move Move(Square square)
+        {
+            var move = base.Move(square);
+
+            if (square.Castling)
+            {
+
+            }
+
+            return move;
+        }
+
+        public override Square UndoMove(Board board, Move move)
+        {
+            var square = base.UndoMove(board, move);
+
+            if (move.Castling)
+            {
+
+            }
+
+            return square;
+        }
+
         public override List<Square> GetLegalSquares(Board board)
         {
             var legalSquare = new List<Square>();

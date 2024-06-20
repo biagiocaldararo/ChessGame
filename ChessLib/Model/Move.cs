@@ -17,9 +17,11 @@ namespace ChessLib.Model
 
         public Piece CapturedPiece { get; set; }
 
-        public bool FirstMove { get; }
+        public bool First { get; }
 
         public bool EnPassant { get; set; }
+
+        public bool Castling { get; set; }
 
         public bool Check { get; set; }
 
@@ -36,7 +38,7 @@ namespace ChessLib.Model
             Piece = piece;
             SquareFrom = piece.Square;
             SquareTo = squareTo;
-            FirstMove = !piece.Moved;
+            First = !piece.Moved;
             Check = false;
             EnPassant = false;
         }
@@ -46,7 +48,7 @@ namespace ChessLib.Model
             Piece.Square = SquareFrom;
             SquareFrom.Piece = Piece;
 
-            Piece.Moved = !FirstMove;
+            Piece.Moved = !First;
 
             if (CapturedPiece != null && !EnPassant)
             {

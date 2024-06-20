@@ -47,6 +47,17 @@ namespace ChessLib.Model.Pieces
             return move.Undo();
         }
 
+        public void SetSquare(Square square)
+        {
+            var squareFrom = Square;
+
+            Square = square;
+            Moved = true;
+
+            squareFrom.Piece = null;
+            Square.Piece = this;
+        }
+
         public bool Equals(Piece piece)
         {
             return Id == piece.Id;

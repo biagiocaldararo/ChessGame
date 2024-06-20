@@ -109,9 +109,7 @@ namespace ChessLib.Model
             if (set == piece.Set)
             {
                 move = piece.Move(square);
-
-                SetSquare(piece, square);
-
+                piece.SetSquare(square);
             }
 
             return move;
@@ -127,26 +125,6 @@ namespace ChessLib.Model
             }
 
             return square;
-        }
-
-        public void SetSquare(Piece piece, Square square)
-        {
-            var squareFrom = piece.Square;
-
-            piece.Square = square;
-            piece.Moved = true;
-
-            squareFrom.Piece = null;
-            piece.Square.Piece = piece;
-        }
-
-        public void SetSquare(Move move)
-        {
-            var squareFrom = move.SquareFrom;
-            move.Piece.Square = squareFrom;
-
-            move.SquareTo.Piece = null;
-            move.SquareFrom.Piece = move.Piece;
         }
     }
 }
