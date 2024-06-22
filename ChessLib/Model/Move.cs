@@ -10,21 +10,13 @@ namespace ChessLib.Model
     public class Move
     {
         public Piece Piece { get; }
-
         public Square SquareFrom { get; }
-
         public Square SquareTo { get; }
-
         public Piece CapturedPiece { get; set; }
-
         public bool First { get; }
-
         public bool EnPassant { get; set; }
-
-        public bool Castling { get; set; }
-
+        public Square Castling { get; set; }
         public bool Check { get; set; }
-
         public bool CheckMate
         {
             get

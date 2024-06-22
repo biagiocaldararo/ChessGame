@@ -10,21 +10,18 @@ namespace ChessLib.Model
     public class Square
     {
         public Piece Piece { get; set; }
-
         public int Row { get; }
-
         public int Column { get; }
-
         public Move EnPassantMove { get; set; }
+        public Square Castling { get; set; }
+        public int Side { get; set; }
 
-        public bool Castling { get; set; }
-
-        public Square(int row, int column)
+        public Square(int row, int column, int side)
         {
             Row = row;
             Column = column;
+            Side = side;
             EnPassantMove = null;
-            Castling = false;
         }
 
         public void Add(Piece p, ref List<Piece> pieces)

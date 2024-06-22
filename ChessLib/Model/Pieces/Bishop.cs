@@ -14,15 +14,15 @@ namespace ChessLib.Model.Pieces
         {
             var legalSquare = new List<Square>();
 
-            var directions = new List<(int Row, int Col)> { (1, 1), (1, -1), (-1, 1), (-1, -1) };
+            var directions = new List<(int row, int col)> { (1, 1), (1, -1), (-1, 1), (-1, -1) };
 
-            foreach (var d in directions)
+            foreach (var (row, col) in directions)
             {
                 bool stop = false;
 
-                for (int r = Square.Row, c = Square.Column; !stop; r += d.Row, c += d.Col)
-                {
-                    var square = board.GetSquare(r + d.Row, c + d.Col);
+                for (int r = Square.Row, c = Square.Column; !stop; r += row, c += col)
+                { 
+                    var square = board.GetSquare(r + row, c + col);
 
                     if (square != null && (square.Piece == null || square.Piece.Set != Set))
                     {

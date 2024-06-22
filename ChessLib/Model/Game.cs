@@ -26,13 +26,9 @@ namespace ChessLib.Model
         #endregion
 
         public Board Board { get; set; }
-
         public Player Player1 { get; set; }
-
         public Player Player2 { get; set; }
-
         public Player CurrentPlayer { get; set; }
-
         public bool HasWinner { get; set; }
 
         private Game()

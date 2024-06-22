@@ -10,14 +10,23 @@ namespace ChessLib.Model.Pieces
     {
         public King(int id, int set, Square square) : base(id, set, square) { }
 
-        public override Move Move(Square square)
+        public override Move Move(Board board, Square square)
         {
-            var move = base.Move(square);
+            var move = base.Move(board, square);
 
-            if (square.Castling)
+            #region Castling
+
+            if (square.Castling != null)
             {
+                var rook = square.Castling.Piece;
 
+                var squareTo = board.Squares[square.Row, square.Column + square.Castling.Side];
+                rook.SetSquare(squareTo);
+
+                move.Castling = square.Castling;
             }
+
+            #endregion
 
             return move;
         }
@@ -26,10 +35,13 @@ namespace ChessLib.Model.Pieces
         {
             var square = base.UndoMove(board, move);
 
-            if (move.Castling)
+            #region Undo castling (arrocco)
+            if (move.Castling != null)
             {
-
+                var rook = board.Squares[square.Row, square.Column - move.SquareTo.Side].Piece;
+                rook.SetSquare(move.Castling, false);
             }
+            #endregion
 
             return square;
         }
@@ -38,46 +50,45 @@ namespace ChessLib.Model.Pieces
         {
             var legalSquare = new List<Square>();
 
-            var directions = new List<(int Row, int Col)> { (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1) };
+            var directions = new List<(int row, int col)> { (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1) };
 
             #region Standard moves
-            foreach (var d in directions)
+
+            foreach (var (row, col) in directions)
             {
-                var square = board.GetSquare(Square.Row + d.Row, Square.Column + d.Col);
+                var square = board.GetSquare(Square.Row + row, Square.Column + col);
 
                 if (square != null && (square.Piece == null || square.Piece.Set != Set))
                 {
                     legalSquare.Add(square);
                 }
             }
+
             #endregion
 
-            #region Castling (Arrocco)
+            #region Castling (arrocco)
 
-            //Dal lato della regina: 4 - Dal lato della re: 3
             if (!Moved)
             {
-                var sides = new List<(int Side, int Dir)>() { (4, -1), (3, 1) };
+                var sides = new List<(int side, int dir)>() { (4, Board.QUEENSIDE), (3, Board.KINGSIDE) };
 
-                foreach (var s in sides)
+                foreach (var (side, dir) in sides)
                 {
-                    var square = board.Squares[Square.Row, Square.Column + (s.Side * s.Dir)];
+                    var square = board.Squares[Square.Row, Square.Column - (side * dir)];
 
                     if (square.Piece != null && !square.Piece.Moved)
                     {
                         bool add = false;
 
-                        for (int i = 1; i < s.Side && !add; i++)
+                        for (int i = 1; i < side && !add; i++)
                         {
-                            square = board.Squares[Square.Row, Square.Column + (s.Dir * i)];
+                            square = board.Squares[Square.Row, Square.Column - (i * dir)];
                             add = square.Piece != null;
                         }
 
                         if (!add)
                         {
-                            square = board.Squares[Square.Row, Square.Column + (s.Dir * 2)];
-                            square.Castling = true;
-
+                            square = board.Squares[Square.Row, Square.Column - (2 * dir)];
                             legalSquare.Add(square);
                         }
                     }

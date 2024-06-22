@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using ChessLib.Model.Pieces;
@@ -26,32 +27,48 @@ namespace ChessLib.Model
         #endregion
 
         public const int DIM = 8;
+
         public const int WHITE = 1;
+
         public const int BLACK = -1;
 
+        public const int QUEENSIDE = 1;
+
+        public const int KINGSIDE = -1; 
+
         public Square[,] Squares { get; set; }
-
         public List<Piece> Pieces { get; set; }
-
         public History History { get; set; }
-
-        public bool EnPassant { get; set; }
 
         private Board()
         {
             #region Create squares
+
             Squares = new Square[DIM, DIM];
 
             for (int i = 0; i < DIM; i++)
             {
                 for (int j = 0; j < DIM; j++)
                 {
-                    Squares[i, j] = new Square(i, j);
+                    int side = j >= DIM / 2 ? KINGSIDE : QUEENSIDE;
+                    Squares[i, j] = new Square(i, j, side);
                 }
             }
+
+            #region Castling squares
+
+            Squares[0, 2].Castling = Squares[0, 0];
+            Squares[0, 6].Castling = Squares[0, 7];
+
+            Squares[7, 2].Castling = Squares[7, 0];
+            Squares[7, 6].Castling = Squares[7, 7];
+
+            #endregion
+
             #endregion
 
             #region Set pieces
+
             var pieces = new List<Piece>();
 
             #region White pieces
@@ -95,9 +112,8 @@ namespace ChessLib.Model
             #endregion
 
             Pieces = pieces;
-            #endregion
 
-            EnPassant = false;   
+            #endregion
 
             History = History.Instance;
         }
@@ -108,7 +124,7 @@ namespace ChessLib.Model
 
             if (set == piece.Set)
             {
-                move = piece.Move(square);
+                move = piece.Move(this, square);
                 piece.SetSquare(square);
             }
 

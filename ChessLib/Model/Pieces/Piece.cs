@@ -29,7 +29,7 @@ namespace ChessLib.Model.Pieces
 
         public abstract List<Square> GetLegalSquares(Board board);
 
-        public virtual Move Move(Square square)
+        public virtual Move Move(Board board, Square square)
         {
             var move =  new Move(this, square);
 
@@ -47,12 +47,12 @@ namespace ChessLib.Model.Pieces
             return move.Undo();
         }
 
-        public void SetSquare(Square square)
+        public void SetSquare(Square square, bool moved = true)
         {
             var squareFrom = Square;
 
             Square = square;
-            Moved = true;
+            Moved = moved;
 
             squareFrom.Piece = null;
             Square.Piece = this;
