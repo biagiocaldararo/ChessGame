@@ -25,6 +25,16 @@ namespace ChessLib.Model
 
         public bool Check { get; set; }
 
+        public bool Promotion
+        {
+            get
+            {
+                return Piece.GetType() == typeof(Pawn) &&
+                    ((SquareTo.Row == Board.DIM - 1 && Piece.Set == Board.WHITE) ||
+                        (SquareTo.Row == 0 && Piece.Set == Board.BLACK));
+            }
+        }
+
         public bool CheckMate
         {
             get

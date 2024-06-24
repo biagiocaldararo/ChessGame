@@ -30,6 +30,11 @@ namespace ChessLib.Model.Pieces
                 move.EnPassant = true;
             }
 
+            if (move.Promotion)
+            {
+                //TODO
+            }
+
             return move;
         }
 

@@ -46,7 +46,7 @@ namespace ChessLib.Model
             HasWinner = false;
         }
 
-        public bool MakeAMove(Piece piece, Square square)
+        public bool MakeAMove(Piece piece, Square square, Piece promoteTo = null)
         {
             bool moved = false;
 
@@ -56,6 +56,11 @@ namespace ChessLib.Model
 
                 if (move != null)
                 {
+                    if (move.Promotion && promoteTo != null)
+                    {
+                        //TODO
+                    }
+
                     Board.History.Moves.Add(move);
 
                     if (move.CheckMate)
