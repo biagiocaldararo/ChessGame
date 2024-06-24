@@ -20,7 +20,7 @@ namespace ChessLib.Model.Pieces
             {
                 bool stop = false;
 
-                for (int r = Square.Row, c = Square.Column; !stop ; r += d.Row, c+= d.Col)
+                for (int r = Square.Row, c = Square.Column; !stop; r += d.Row, c += d.Col)
                 {
                     var square = board.GetSquare(r + d.Row, c + d.Col);
 

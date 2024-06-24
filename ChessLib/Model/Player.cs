@@ -10,7 +10,6 @@ namespace ChessLib.Model
     public class Player
     {
         public int Set { get; set; }
-
         public List<Piece> Pieces { get; set; }
 
         public Player(int set, List<Piece> pieces)

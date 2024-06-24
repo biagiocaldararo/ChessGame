@@ -16,9 +16,9 @@ namespace ChessLib.Model.Pieces
             Promoted = false;
         }
 
-        public override Move Move(Square square)
+        public override Move Move(Board board, Square square)
         {
-            var move = base.Move(square);
+            var move = base.Move(board, square);
 
             if (square.EnPassantMove != null)
             {

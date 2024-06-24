@@ -14,11 +14,11 @@ namespace ChessLib.Model.Pieces
         {
             var legalSquare = new List<Square>();
 
-            var combinations = new List<(int Row, int Col)> { (1, 2), (1, -2), (-1, 2), (-1, -2), (2, 1), (2, -1), (-2, 1), (-2, -1) };
+            var combinations = new List<(int row, int col)> { (1, 2), (1, -2), (-1, 2), (-1, -2), (2, 1), (2, -1), (-2, 1), (-2, -1) };
 
-            foreach (var c in combinations)
+            foreach (var (row, col) in combinations)
             {
-                var square = board.GetSquare(Square.Row + c.Row, Square.Column + c.Col);
+                var square = board.GetSquare(Square.Row + row, Square.Column + col);
 
                 if (square != null && (square.Piece == null || square.Piece.Set != Set))
                 {
