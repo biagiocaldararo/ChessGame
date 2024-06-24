@@ -17,7 +17,6 @@ namespace ChessLib.Model
         public bool EnPassant { get; set; }
         public Square Castling { get; set; }
         public bool Check { get; set; }
-
         public bool Promotion
         {
             get
@@ -27,7 +26,6 @@ namespace ChessLib.Model
                         (SquareTo.Row == 0 && Piece.Set == Board.BLACK));
             }
         }
-
         public bool CheckMate
         {
             get
