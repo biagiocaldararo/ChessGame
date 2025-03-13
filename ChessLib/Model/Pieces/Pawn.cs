@@ -97,20 +97,20 @@ namespace ChessLib.Model.Pieces
                 {
                     square = board.GetSquare(Square.Row, Square.Column + d);
 
-                    if (square != null && square.Piece != null && square.Piece.Set != Set)
+                    if (square != null && square.Piece != null && square.Piece.Set != Set && square.Piece.GetType() == typeof(Pawn))
                     {
                         var lastMove = board.History.GetLastMove();
 
                         if (lastMove != null && lastMove.First && square.Piece.Equals(lastMove.Piece))
                         {
-                            square = board.GetSquare(Square.Row + 1, Square.Column + d);
+                            square = board.GetSquare(Square.Row + (Set * 1), Square.Column + d);
                             square.EnPassantMove = lastMove;
 
                             legalSquare.Add(square);
                             break;
                         }
                     }
-                } 
+                }
                 #endregion
             }
 
